@@ -1,6 +1,6 @@
 [flake8]
 count = true
-exclude = cards,.flake8,.git,.travis.yml,requirements.txt,.gitignore,*.in
+exclude = cards,.flake8,.git,.travis.yml,requirements.txt,.gitignore,*.toml
 format = pylint
 max_line_length = 128
 max_complexity = 10
