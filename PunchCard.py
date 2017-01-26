@@ -6,13 +6,13 @@ dayHours = 0.0
 def calcWorkTime(timeIn, timeOut):
   inSplit = timeIn.split(':')
   outSplit = timeOut.split(':')
-  hourIn = int(inSplit[0])
-  minuteIn = int(inSplit[1])
-  hourOut = int(outSplit[0])
-  minuteOut = int(outSplit[1])
+  hourIn = float(inSplit[0])
+  minuteIn = float(inSplit[1])
+  hourOut = float(outSplit[0])
+  minuteOut = float(outSplit[1])
 
   if hourIn > hourOut:
-    newHour = (hourOut + 24) - hourIn
+    newHour = (hourOut + 12) - hourIn
   else:
     newHour = hourOut - hourIn
 
@@ -22,7 +22,7 @@ def calcWorkTime(timeIn, timeOut):
     newMinutes += 60
 
   global dayHours
-  dayHours += float(newHour) + (float(newMinutes)/60)
+  dayHours += newHour + (newMinutes / 60)
 
 def calculateDay(dayEntry):
   day = dayEntry.pop(0)[0]
@@ -41,6 +41,6 @@ print lines.pop(0)
 for line in lines:
   calculateDay(line.split(','))
   weekHours += dayHours
-  dayHours = 0
+  dayHours = 0.0
 
 print '\nTotal hours for the week: ' + str(weekHours)
