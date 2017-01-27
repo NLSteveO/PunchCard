@@ -1,0 +1,7 @@
+[flake8]
+count = true
+exclude = cards,.flake8,.git,.travis.yml
+format = pylint
+max_line_length = 80
+max_complexity = 10
+show_source = true
