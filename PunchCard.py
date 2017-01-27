@@ -30,17 +30,17 @@ def calculateDay(dayEntry):
   while(index < len(dayEntry)):
     calcWorkTime(dayEntry[index], dayEntry[index+1])
     index += 2
-  print day + ': ' + str(dayHours)
+  print (day + ': ' + str(dayHours))
 
 
 lines=[]
 for line in fileinput.input():
   lines.append(line)
 
-print lines.pop(0)
+print (lines.pop(0))
 for line in lines:
   calculateDay(line.split(','))
   weekHours += dayHours
   dayHours = 0
 
-print '\nTotal hours for the week: ' + str(weekHours)
+print ('\nTotal hours for the week: ' + str(weekHours))
