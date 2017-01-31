@@ -1,6 +1,6 @@
 [flake8]
 count = true
-exclude = cards,.flake8,.git,.travis.yml
+exclude = cards,.flake8,.git,.travis.yml,requirements.txt
 format = pylint
 max_line_length = 80
 max_complexity = 10
