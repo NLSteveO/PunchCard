@@ -1,8 +1,5 @@
 import fileinput
 
-weekHours = 0.0
-dayHours = 0.0
-
 
 def calcWorkTime(timeIn, timeOut):
     inSplit = timeIn.split(':')
@@ -22,27 +19,33 @@ def calcWorkTime(timeIn, timeOut):
         newHour -= 1
         newMinutes += 60
 
-    global dayHours
-    dayHours += newHour + (newMinutes / 60)
+    return newHour + (newMinutes / 60)
 
 
 def calculateDay(dayEntry):
-    day = dayEntry.pop(0)[0]
     index = 0
-    while(index < len(dayEntry)):
-        calcWorkTime(dayEntry[index], dayEntry[index+1])
-        index += 2
-    print(day + ': ' + str(dayHours))
-
-
-lines = []
-for line in fileinput.input():
-    lines.append(line)
-
-print(lines.pop(0))
-for line in lines:
-    calculateDay(line.split(','))
-    weekHours += dayHours
     dayHours = 0.0
+    while(index < len(dayEntry)):
+        dayHours += calcWorkTime(dayEntry[index], dayEntry[index+1])
+        index += 2
+    return dayHours
 
-print('\nTotal hours for the week: ' + str(weekHours))
+
+def main(input):
+    weekHours = 0.0
+    print(input.pop(0))
+    for line in input:
+        daySplit = line.split(',')
+        dayLetter = daySplit.pop(0)[0]
+        dayHours = calculateDay(daySplit)
+        print(dayLetter + ': ' + str(dayHours))
+        weekHours += dayHours
+
+    print('\nTotal hours for the week: ' + str(weekHours))
+
+
+if __name__ == '__main__':
+    lines = []
+    for line in fileinput.input():
+        lines.append(line)
+    main(lines)
