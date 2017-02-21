@@ -2,6 +2,6 @@
 count = true
 exclude = cards,.flake8,.git,.travis.yml,requirements.txt,.gitignore,*.in
 format = pylint
-max_line_length = 80
+max_line_length = 128
 max_complexity = 10
 show_source = true
