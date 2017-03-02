@@ -6,4 +6,6 @@ install:
   pip install -r requirements.txt
 # command to run tests
 script:
-  flake8 && python -m unittest -bv tests/PunchCard-test.py
+  - flake8
+  - coverage run -m tests.PunchCard-test -bv
+  - coverage report

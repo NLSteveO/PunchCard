@@ -56,7 +56,7 @@ def printWeekHours(hours, timeFormat):
         print('\nTotal hours for the week: {} hours {} minutes({} hours)'.format(intHours, intMinutes, floatHours))
 
 
-def main(input, timeFormat):
+def main(input, timeFormat):  # pragma: no cover
     weekHours = 0.0
     print(input.pop(0))
     for line in input:
@@ -69,7 +69,7 @@ def main(input, timeFormat):
     printWeekHours(weekHours, timeFormat)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     description = 'This is a simple program meant to calculate my work hours.'
     parser = argparse.ArgumentParser(description=description)
     group = parser.add_mutually_exclusive_group()

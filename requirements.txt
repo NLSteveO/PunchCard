@@ -1,2 +1,3 @@
 ##### Requirements for Punch Card #####
 flake8 >= 3.2.1
+coverage >= 3.4.3
