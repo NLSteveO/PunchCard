@@ -1,0 +1,22 @@
+title = "Week ending on 12/9/16"
+
+[day]
+  projects = [000]
+
+  [day.sunday]
+
+  [day.saturday]
+
+  [day.monday]
+    000 = ['8:10', '12:00', '12:30', '5:10']
+
+  [day.tuesday]
+    000 = ['8:10', '10:00', '10:10', '12:10', '12:40', '2:00', '2:10', '5:00']
+
+  [day.wednesday]
+    000 = ['8:00', '4:00']
+
+  [day.thursday]
+
+  [day.friday]
+    000 = ['8:00', '8:00']

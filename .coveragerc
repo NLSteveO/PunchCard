@@ -3,6 +3,8 @@ branch = true
 omit =
     # Omit tests
     tests/*
+    # Omit external libraries
+    */dist-packages/*
 
 [report]
 precision = 2
