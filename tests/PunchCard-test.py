@@ -51,48 +51,48 @@ class CalculateDayTests(unittest.TestCase):
 class PrintDaysHoursTests(unittest.TestCase):
 
     def test_printsStringForDayWithHoursMinutesAndDecimalHours_givenNoTimeFormat(self):
-        PunchCard.printDaysHours('M', 8.166666666666666, None)
+        PunchCard.printDaysHours('monday', 8.166666666666666, None)
         if not hasattr(sys.stdout, "getvalue"):
             self.fail("need to run in buffered mode")
         actualOutput = sys.stdout.getvalue().strip()
-        expectedOutput = 'M: 8 hours 10 minutes(8.167 hours)'
+        expectedOutput = 'monday: 8 hours 10 minutes(8.167 hours)'
         self.assertEqual(actualOutput, expectedOutput)
 
     def test_printsStringForDayWithHoursMinutesAndDecimalHours_givenAnyStringAsATimeFormat(self):
-        PunchCard.printDaysHours('M', 8.166666666666666, 'aaa')
+        PunchCard.printDaysHours('monday', 8.166666666666666, 'aaa')
         if not hasattr(sys.stdout, "getvalue"):
             self.fail("need to run in buffered mode")
         actualOutput = sys.stdout.getvalue().strip()
-        expectedOutput = 'M: 8 hours 10 minutes(8.167 hours)'
+        expectedOutput = 'monday: 8 hours 10 minutes(8.167 hours)'
         self.assertEqual(actualOutput, expectedOutput)
 
     def test_printsStringForDayWithHoursMinutesAndDecimalHours_givenAnyNumberAsATimeFormat(self):
-        PunchCard.printDaysHours('M', 8.166666666666666, 6.6)
+        PunchCard.printDaysHours('monday', 8.166666666666666, 6.6)
         if not hasattr(sys.stdout, "getvalue"):
             self.fail("need to run in buffered mode")
         actualOutput = sys.stdout.getvalue().strip()
-        expectedOutput = 'M: 8 hours 10 minutes(8.167 hours)'
+        expectedOutput = 'monday: 8 hours 10 minutes(8.167 hours)'
         self.assertEqual(actualOutput, expectedOutput)
 
     def test_printsStringForDayWithHoursMinutes_givenTimeFormatHHmm(self):
-        PunchCard.printDaysHours('M', 8.166666666666666, 'HH:mm')
+        PunchCard.printDaysHours('monday', 8.166666666666666, 'HH:mm')
         if not hasattr(sys.stdout, "getvalue"):
             self.fail("need to run in buffered mode")
         actualOutput = sys.stdout.getvalue().strip()
-        expectedOutput = 'M: 8 hours 10 minutes'
+        expectedOutput = 'monday: 8 hours 10 minutes'
         self.assertEqual(actualOutput, expectedOutput)
 
     def test_printsStringForDayWithDecimalHours_givenTimeFormatHHhhh(self):
-        PunchCard.printDaysHours('M', 8.166666666666666, 'HH.hhh')
+        PunchCard.printDaysHours('monday', 8.166666666666666, 'HH.hhh')
         if not hasattr(sys.stdout, "getvalue"):
             self.fail("need to run in buffered mode")
         actualOutput = sys.stdout.getvalue().strip()
-        expectedOutput = 'M: 8.167 hours'
+        expectedOutput = 'monday: 8.167 hours'
         self.assertEqual(actualOutput, expectedOutput)
 
     def test_throwsError_givenAStringForHours(self):
         with self.assertRaises(TypeError):
-            PunchCard.printDaysHours('M', 'a', 'HH.hhh')
+            PunchCard.printDaysHours('monday', 'a', 'HH.hhh')
 
 
 class PrintWeekHoursTests(unittest.TestCase):
