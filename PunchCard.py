@@ -1,5 +1,6 @@
 import argparse
-import fileinput
+import sys
+import toml
 
 
 def calcWorkTime(timeIn, timeOut):
@@ -56,14 +57,16 @@ def printWeekHours(hours, timeFormat):
         print('\nTotal hours for the week: {} hours {} minutes({} hours)'.format(intHours, intMinutes, floatHours))
 
 
-def main(input, timeFormat):  # pragma: no cover
+def main(config, timeFormat):  # pragma: no cover
+    daysOfTheWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     weekHours = 0.0
-    print(input.pop(0))
-    for line in input:
-        daySplit = line.split(',')
-        dayLetter = daySplit.pop(0)[0]
-        dayHours = calculateDay(daySplit)
-        printDaysHours(dayLetter, dayHours, timeFormat)
+    print(config['title'] + '\n')
+    for day in daysOfTheWeek:
+        if day not in config['day'] or not config['day'][day]:
+            printDaysHours(day, 0, timeFormat)
+            continue
+        dayHours = calculateDay(config['day'][day]['000'])
+        printDaysHours(day, dayHours, timeFormat)
         weekHours += dayHours
 
     printWeekHours(weekHours, timeFormat)
@@ -79,13 +82,11 @@ if __name__ == '__main__':  # pragma: no cover
                         help='The file to be read or if no file given read stdin')
     args = parser.parse_args()
 
-    lines = []
     if args.file.name == '<stdin>':
-        for line in fileinput.input('-'):
-            lines.append(line)
+        config = toml.loads(sys.stdin.read())
     else:
-        for line in fileinput.input(args.file.name):
-            lines.append(line)
+        with open(args.file.name, 'r') as confFile:
+            config = toml.loads(confFile.read())
 
     if args.hours:
         timeFormat = 'HH.hhh'
@@ -94,4 +95,4 @@ if __name__ == '__main__':  # pragma: no cover
     else:
         timeFormat = None
 
-    main(lines, timeFormat)
+    main(config, timeFormat)

@@ -34,21 +34,21 @@ Running
 #### Simple
 To run this program you will want to pass the input file to the program as an argument and it will output to your screen:
 ```
-$ python3 -m PunchCard tests/test.in
+$ python3 -m PunchCard tests/test.toml
 ```
 
 #### Advanced
 It is also possible to pass the input file in through stdin like so:
 ```
-$ python3 -m PunchCard < tests/test.in
+$ python3 -m PunchCard < tests/test.toml
 ```
 However you can also then redirect the standard out to a file rather than have the output print to the screen like this:
 ```
-$ python3 -m PunchCard tests/test.in > test.out
+$ python3 -m PunchCard tests/test.toml > test.out
 ```
 Also, if you want to have the output go to a file and your screen you can do the following:
 ```
-$ python3 -m PunchCard tests/test.in | tee test.out
+$ python3 -m PunchCard tests/test.toml | tee test.out
 ```
 
 #### Flags
@@ -57,28 +57,32 @@ There are two additional Flags that you can pass to the program to alter who the
 - `-H, --hours`    Outputs hours only as a decimal
 
 ```
-$ python3 -m PunchCard tests/test.in -H
+$ python3 -m PunchCard tests/test.toml -H
 Week ending on 12/9/16
 
-M: 8.5 hours
-T: 8.0 hours
-W: 8.0 hours
-R: 0.0 hours
-F: 0.0 hours
+saturday: 0 hours
+sunday: 0 hours
+monday: 8.5 hours
+tuesday: 8.0 hours
+wednesday: 8.0 hours
+thursday: 0 hours
+friday: 0.0 hours
 
 Total hours for the week: 24.5 hours
 ```
 - `-m, --minutes`  Outputs hours with minutes
 
 ```
-$ python3 -m PunchCard tests/test.in -m
+$ python3 -m PunchCard tests/test.toml -m
 Week ending on 12/9/16
 
-M: 8 hours 30 minutes
-T: 8 hours 0 minutes
-W: 8 hours 0 minutes
-R: 0 hours 0 minutes
-F: 0 hours 0 minutes
+saturday: 0 hours 0 minutes
+sunday: 0 hours 0 minutes
+monday: 8 hours 30 minutes
+tuesday: 8 hours 0 minutes
+wednesday: 8 hours 0 minutes
+thursday: 0 hours 0 minutes
+friday: 0 hours 0 minutes
 
 Total hours for the week: 24 hours 30 minutes
 ```
@@ -100,36 +104,57 @@ $ python3 -m unittest -bv tests/PunchCard-test
 Examples
 --------
 #### Input Example
-The input should be a file where the first line states "Week ending on [mm/dd/yy]" The next 5 lines are the days of the week with comma separated values stating the times i start and end my day or various breaks.
+The input should be a [TOML](https://github.com/toml-lang/toml) file like the example below. The title in the input will be the first line in your output, you can skip days of the week or leave them empty, and the array of time punches for each day can be done in 12 hour or 24 hour format as long as it is consistent for the array.
+
+*NOTE:* The projects array is for future implementation where you can add your hours to separate projects. For now set one number in the array and use that as the key to your week days array like in the example.
 
 For Example:
 ```
-Week ending on 12/9/16
-M,8:10,12:00,12:30,5:10
-T,8:10,10:00,10:10,12:10,12:40,2:00,2:10,5:00
-W,8:00,4:00
-R
-F,8:00,8:00
+title = "Week ending on 12/9/16"
+
+[day]
+  projects = [000]
+
+  [day.sunday]
+
+  [day.saturday]
+
+  [day.monday]
+    000 = ['8:10', '12:00', '12:30', '5:10']
+
+  [day.tuesday]
+    000 = ['8:10', '10:00', '10:10', '12:10', '12:40', '2:00', '2:10', '5:00']
+
+  [day.wednesday]
+    000 = ['8:00', '4:00']
+
+  [day.thursday]
+
+  [day.friday]
+    000 = ['8:00', '8:00']
 ```
 
 #### Output Example
-The output will be similar to the input file, the first line will be "Week ending on [mm/dd/yy]". The following 5 lines will start with the first letter of that day of the week then the number of hours worked that day. The last day will say "Total hours for the week: [x]" where [x] is the sum of the hours on the 5 previous lines.
+The output will be a simple text file, the first line will be "Week ending on [mm/dd/yy]". The following 5 lines will start with the day of the week then the number of hours and minutes worked that day. The last line will say "Total hours for the week: [x]" where [x] is the sum of the hours and minutes from the 5 previous lines.
 
 For Example:
 ```
 Week ending on 12/9/16
 
-M: 8 hours 30 minutes(8.5 hours)
-T: 8 hours 0 minutes(8.0 hours)
-W: 8 hours 0 minutes(8.0 hours)
-R: 0 hours 0 minutes(0.0 hours)
-F: 0 hours 0 minutes(0.0 hours)
+saturday: 0 hours 0 minutes(0 hours)
+sunday: 0 hours 0 minutes(0 hours)
+monday: 8 hours 30 minutes(8.5 hours)
+tuesday: 8 hours 0 minutes(8.0 hours)
+wednesday: 8 hours 0 minutes(8.0 hours)
+thursday: 0 hours 0 minutes(0 hours)
+friday: 0 hours 0 minutes(0.0 hours)
 
 Total hours for the week: 24 hours 30 minutes(24.5 hours)
 ```
 
 What's New
 ----------
+- 2017-03-16: Add a new format for the Time Cards.
 - 2017-03-02: Add coverage library to use coverage reports.
 - 2017-02-21: Add argparse library to use command line flags.
 - 2017-02-09: Fixed the project directory structure.
