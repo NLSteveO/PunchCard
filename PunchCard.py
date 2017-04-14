@@ -66,7 +66,7 @@ def printWeekHours(hours, timeFormat):
         return '\nTotal hours for the week: {} hours {} minutes({} hours)'.format(intHours, intMinutes, floatHours)
 
 
-def main(config, timeFormat):  # pragma: no cover
+def main(config, timeFormat):
     daysOfTheWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     weekHours = 0.0
     punchCardOutput = '{}{}'.format(config['title'], '\n')
