@@ -38,11 +38,11 @@ def printDaysHours(day, hours, timeFormat):
     intHours = int(floatHours)
     intMinutes = int((floatHours - intHours)*60)
     if timeFormat == 'HH.hhh':
-        print('{}: {} hours'.format(day, floatHours))
+        return '\n{}: {} hours'.format(day.capitalize(), floatHours)
     elif timeFormat == 'HH:mm':
-        print('{}: {} hours {} minutes'.format(day, intHours, intMinutes))
+        return '\n{}: {} hours {} minutes'.format(day.capitalize(), intHours, intMinutes)
     else:
-        print('{}: {} hours {} minutes({} hours)'.format(day, intHours, intMinutes, floatHours))
+        return '\n{}: {} hours {} minutes({} hours)'.format(day.capitalize(), intHours, intMinutes, floatHours)
 
 
 def printWeekHours(hours, timeFormat):
@@ -50,26 +50,26 @@ def printWeekHours(hours, timeFormat):
     intHours = int(floatHours)
     intMinutes = int((floatHours - intHours)*60)
     if timeFormat == 'HH.hhh':
-        print('\nTotal hours for the week: {} hours'.format(floatHours))
+        return '\nTotal hours for the week: {} hours'.format(floatHours)
     elif timeFormat == 'HH:mm':
-        print('\nTotal hours for the week: {} hours {} minutes'.format(intHours, intMinutes))
+        return '\nTotal hours for the week: {} hours {} minutes'.format(intHours, intMinutes)
     else:
-        print('\nTotal hours for the week: {} hours {} minutes({} hours)'.format(intHours, intMinutes, floatHours))
+        return '\nTotal hours for the week: {} hours {} minutes({} hours)'.format(intHours, intMinutes, floatHours)
 
 
 def main(config, timeFormat):  # pragma: no cover
     daysOfTheWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']
     weekHours = 0.0
-    print(config['title'] + '\n')
+    punchCardOutput = '{}{}'.format(config['title'], '\n')
     for day in daysOfTheWeek:
         if day not in config['day'] or not config['day'][day]:
-            printDaysHours(day, 0, timeFormat)
+            punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, 0, timeFormat))
             continue
         dayHours = calculateDay(config['day'][day]['000'])
-        printDaysHours(day, dayHours, timeFormat)
+        punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, dayHours, timeFormat))
         weekHours += dayHours
 
-    printWeekHours(weekHours, timeFormat)
+    return '{}{}{}'.format(punchCardOutput, '\n', printWeekHours(weekHours, timeFormat))
 
 
 if __name__ == '__main__':  # pragma: no cover
@@ -95,4 +95,4 @@ if __name__ == '__main__':  # pragma: no cover
     else:
         timeFormat = None
 
-    main(config, timeFormat)
+    print(main(config, timeFormat))
