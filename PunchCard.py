@@ -72,10 +72,10 @@ def main(config, timeFormat):
     punchCardOutput = '{}{}'.format(config['title'], '\n')
     for day in daysOfTheWeek:
         if day not in config['day'] or not config['day'][day]:
-            punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, 0, timeFormat))
+            punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, 0.0, timeFormat))
             continue
         if not validDay(config['day'][day]['000']):
-            punchCardOutput = '{}\n{}: Invalid number of time punches'.format(punchCardOutput, day)
+            punchCardOutput = '{}\n{}: Invalid number of time punches'.format(punchCardOutput, day.capitalize())
             continue
         dayHours = calculateDay(config['day'][day]['000'])
         punchCardOutput = '{}{}{}'.format(punchCardOutput, dayHours[1], printDaysHours(day, dayHours[0], timeFormat))
