@@ -1,14 +1,22 @@
 [run]
 branch = true
 omit =
-    # Omit tests
+    # Omit tests directory
     tests/*
     # Omit external libraries
     */dist-packages/*
+    */site-packages/*
 
 [report]
 precision = 2
 ignore_errors = true
+fail_under = 100
+omit =
+    # Omit tests directory
+    tests/*
+    # Omit external libraries
+    */site-packages/*
+    */dist-packages/*
 
 [html]
 directory = coverage
