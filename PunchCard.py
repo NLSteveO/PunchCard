@@ -1,4 +1,5 @@
 import argparse
+import re
 import sys
 import toml
 
@@ -27,10 +28,18 @@ def calcWorkTime(timeIn, timeOut):
 def calculateDay(dayEntry):
     index = 0
     dayHours = 0.0
+    errors = ''
     while(index < len(dayEntry)):
+        if not validTime(dayEntry[index]) or not validTime(dayEntry[index+1]):
+            if not validTime(dayEntry[index]):
+                errors = '{}\nInvalid time: {}'.format(errors, dayEntry[index])
+            if not validTime(dayEntry[index+1]):
+                errors = '{}\nInvalid time: {}'.format(errors, dayEntry[index+1])
+            dayHours = 0.0
+            break
         dayHours += calcWorkTime(dayEntry[index], dayEntry[index+1])
         index += 2
-    return dayHours
+    return (dayHours, errors)
 
 
 def printDaysHours(day, hours, timeFormat):
@@ -65,11 +74,25 @@ def main(config, timeFormat):  # pragma: no cover
         if day not in config['day'] or not config['day'][day]:
             punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, 0, timeFormat))
             continue
+        if not validDay(config['day'][day]['000']):
+            punchCardOutput = '{}\n{}: Invalid number of time punches'.format(punchCardOutput, day)
+            continue
         dayHours = calculateDay(config['day'][day]['000'])
-        punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, dayHours, timeFormat))
-        weekHours += dayHours
+        punchCardOutput = '{}{}{}'.format(punchCardOutput, dayHours[1], printDaysHours(day, dayHours[0], timeFormat))
+        weekHours += dayHours[0]
 
     return '{}{}{}'.format(punchCardOutput, '\n', printWeekHours(weekHours, timeFormat))
+
+
+def validDay(day):
+    return len(day) % 2 == 0
+
+
+def validTime(time):
+    if time is None:
+        return False
+    pattern = re.compile('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+    return pattern.match(time)
 
 
 if __name__ == '__main__':  # pragma: no cover

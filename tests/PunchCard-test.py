@@ -27,25 +27,30 @@ class CaclWorkTimeTests(unittest.TestCase):
 
 class CalculateDayTests(unittest.TestCase):
 
-    def test_returnsZero_givenEmptyArray(self):
-        self.assertEqual(PunchCard.calculateDay([]), 0.0)
+    def test_returnsZeroAndEmptyErrorString_givenEmptyArray(self):
+        self.assertEqual(PunchCard.calculateDay([]), (0.0, ''))
 
-    def test_returnsZero_givenTwoEqualTimeEntries(self):
-        self.assertEqual(PunchCard.calculateDay(['8:00', '8:00']), 0.0)
+    def test_returnsZeroAndEmptyErrorString_givenTwoEqualTimeEntries(self):
+        self.assertEqual(PunchCard.calculateDay(['8:00', '8:00']), (0.0, ''))
 
-    def test_returnsEight_givenFourEntries(self):
+    def test_returnsEightAndEmptyErrorString_givenFourEntries(self):
         dayEntry = ['8:00', '12:00', '1:00', '5:00']
-        self.assertEqual(PunchCard.calculateDay(dayEntry), 8.0)
+        self.assertEqual(PunchCard.calculateDay(dayEntry), (8.0, ''))
 
-    def test_returnsEight_givenTwoEntries(self):
-        self.assertEqual(PunchCard.calculateDay(['8:00', '4:00']), 8.0)
+    def test_returnsEightAndEmptyErrorString_givenTwoEntries(self):
+        self.assertEqual(PunchCard.calculateDay(['8:00', '4:00']), (8.0, ''))
 
-    def test_returnsEightHoursTenMinutesAsDecimal_givenTwoEntries(self):
-        self.assertEqual(PunchCard.calculateDay(['8:00', '4:10']), 8.166666666666666)
+    def test_returnsEightHoursTenMinutesAsDecimalAndEmptyErrorString_givenTwoEntries(self):
+        self.assertEqual(PunchCard.calculateDay(['8:00', '4:10']), (8.166666666666666, ''))
 
-    def test_throwsError_givenAnIncorrectTime(self):
-        with self.assertRaises(ValueError):
-            PunchCard.calculateDay(['a', '10:00'])
+    def test_returnsZeroAndOneInvalidTimeError_givenAnIncorrectFirstTime(self):
+        self.assertEqual(PunchCard.calculateDay(['a', '10:00']), (0, '\nInvalid time: a'))
+
+    def test_returnsZeroAndOneInvalidTimeError_givenAnIncorrectSecondTime(self):
+        self.assertEqual(PunchCard.calculateDay(['8:00', '10:$0']), (0, '\nInvalid time: 10:$0'))
+
+    def test_returnsZeroAndTwoInvalidTimeError_givenTwoIncorrectTimes(self):
+        self.assertEqual(PunchCard.calculateDay(['a', '10:$0']), (0, '\nInvalid time: a\nInvalid time: 10:$0'))
 
 
 class PrintDaysHoursTests(unittest.TestCase):
@@ -110,6 +115,43 @@ class PrintWeekHoursTests(unittest.TestCase):
     def test_throwsError_givenAStringForHours(self):
         with self.assertRaises(TypeError):
             PunchCard.printWeekHours('a', 'HH.hhh')
+
+
+class ValidDayTests(unittest.TestCase):
+    def test_returnsTrue_givenEvenNumberOfTimePunches(self):
+        self.assertTrue(PunchCard.validDay(['8:00', '12:00', '12:30', '4:00']))
+
+    def test_returnsTrue_givenZeroTimePunches(self):
+        self.assertTrue(PunchCard.validDay([]))
+
+    def test_returnsFalse_givenOddNumberOfTimePunches(self):
+        self.assertFalse(PunchCard.validDay(['8:00', '12:00', '12:30']))
+
+
+class ValidTimeTests(unittest.TestCase):
+    def test_returnsTrue_givenValid24HourTime(self):
+        self.assertTrue(PunchCard.validTime('17:00'))
+
+    def test_returnsTrue_givenValid12HourTime(self):
+        self.assertTrue(PunchCard.validTime('5:00'))
+
+    def test_returnsFalse_givenATimeWithHoursOver24(self):
+        self.assertFalse(PunchCard.validTime('48:00'))
+
+    def test_returnsFalse_givenATimeWithMinutesOver59(self):
+        self.assertFalse(PunchCard.validTime('12:76'))
+
+    def test_returnsFalse_givenNonNumbers(self):
+        self.assertFalse(PunchCard.validTime('a:b'))
+
+    def test_returnsFalse_givenNoNumbers(self):
+        self.assertFalse(PunchCard.validTime(':'))
+
+    def test_returnsFalse_givenEmptyString(self):
+        self.assertFalse(PunchCard.validTime(''))
+
+    def test_returnsFalse_givenNone(self):
+        self.assertFalse(PunchCard.validTime(None))
 
 
 if __name__ == '__main__':
