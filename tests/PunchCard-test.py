@@ -154,5 +154,122 @@ class ValidTimeTests(unittest.TestCase):
         self.assertFalse(PunchCard.validTime(None))
 
 
+class MainTests(unittest.TestCase):
+
+    def test_returnsAPunchCardsOutputWithHoursMinutesAndDecimalHours_givenAValidPunchCardWithNoTimeFormat(self):
+        testConfig = {
+            'title': 'Week ending on 12/9/2016',
+            'day': {
+                'projects': [0],
+                'saturday': {},
+                'monday': {'000': ['8:00', '4:00']},
+                'tuesday': {'000': ['8:00', '16:00']},
+                'wednesday': {'000': ['8:10', '12:00', '12:30', '5:10']},
+                'thursday': {'000': ['8:10', '10:00', '10:10', '12:10', '12:40', '2:00', '2:10', '5:00']},
+                'friday': {'000': ['13:00', '13:00']}
+            }
+        }
+        testTimeFormat = None
+        expectedOutput = (
+            'Week ending on 12/9/2016\n'
+            '\nSaturday: 0 hours 0 minutes(0.0 hours)'
+            '\nSunday: 0 hours 0 minutes(0.0 hours)'
+            '\nMonday: 8 hours 0 minutes(8.0 hours)'
+            '\nTuesday: 8 hours 0 minutes(8.0 hours)'
+            '\nWednesday: 8 hours 30 minutes(8.5 hours)'
+            '\nThursday: 8 hours 0 minutes(8.0 hours)'
+            '\nFriday: 0 hours 0 minutes(0.0 hours)'
+            '\n\nTotal hours for the week: 32 hours 30 minutes(32.5 hours)'
+        )
+        self.assertEqual(PunchCard.main(testConfig, testTimeFormat), expectedOutput)
+
+    def test_returnsAPunchCardsOutputWithHoursMinutesOnly_givenAValidPunchCardWithHoursMinutesFormat(self):
+        testConfig = {
+            'title': 'Week ending on 12/9/2016',
+            'day': {
+                'projects': [0],
+                'saturday': {},
+                'monday': {'000': ['8:00', '4:00']},
+                'tuesday': {'000': ['8:00', '16:00']},
+                'wednesday': {'000': ['8:10', '12:00', '12:30', '5:10']},
+                'thursday': {'000': ['8:10', '10:00', '10:10', '12:10', '12:40', '2:00', '2:10', '5:00']},
+                'friday': {'000': ['13:00', '13:00']}
+            }
+        }
+        testTimeFormat = 'HH:mm'
+        expectedOutput = (
+            'Week ending on 12/9/2016\n'
+            '\nSaturday: 0 hours 0 minutes'
+            '\nSunday: 0 hours 0 minutes'
+            '\nMonday: 8 hours 0 minutes'
+            '\nTuesday: 8 hours 0 minutes'
+            '\nWednesday: 8 hours 30 minutes'
+            '\nThursday: 8 hours 0 minutes'
+            '\nFriday: 0 hours 0 minutes'
+            '\n\nTotal hours for the week: 32 hours 30 minutes'
+        )
+        self.assertEqual(PunchCard.main(testConfig, testTimeFormat), expectedOutput)
+
+    def test_returnsAPunchCardsOutputWithDecimalHoursOnly_givenAValidPunchCardWithDecimalHoursFormat(self):
+        testConfig = {
+            'title': 'Week ending on 12/9/2016',
+            'day': {
+                'projects': [0],
+                'saturday': {},
+                'monday': {'000': ['8:00', '4:00']},
+                'tuesday': {'000': ['8:00', '16:00']},
+                'wednesday': {'000': ['8:10', '12:00', '12:30', '5:10']},
+                'thursday': {'000': ['8:10', '10:00', '10:10', '12:10', '12:40', '2:00', '2:10', '5:00']},
+                'friday': {'000': ['13:00', '13:00']}
+            }
+        }
+        testTimeFormat = 'HH.hhh'
+        expectedOutput = (
+            'Week ending on 12/9/2016\n'
+            '\nSaturday: 0.0 hours'
+            '\nSunday: 0.0 hours'
+            '\nMonday: 8.0 hours'
+            '\nTuesday: 8.0 hours'
+            '\nWednesday: 8.5 hours'
+            '\nThursday: 8.0 hours'
+            '\nFriday: 0.0 hours'
+            '\n\nTotal hours for the week: 32.5 hours'
+        )
+        self.assertEqual(PunchCard.main(testConfig, testTimeFormat), expectedOutput)
+
+    def test_returnsAPunchCardsOutputWithDecimalHoursOnly_givenAInvalidPunchCardWithDecimalHoursFormat(self):
+        testConfig = {
+            'title': 'Week ending on 12/9/2016',
+            'day': {
+                'projects': [0],
+                'saturday': {'000': ['8:10', '10:00', '10:10', '12:40', '2:00', '2:10', '5:00']},
+                'sunday': {'000': ['9:@$', 'c:00']},
+                'monday': {'000': ['8:10', '12:00', '5:10']},
+                'tuesday': {'000': ['8:10', '10:00', '10:70', '27:10', '12:40', '2:00', '2:10', '5:00']},
+                'wednesday': {'000': ['8:00', '4:00']},
+                'thursday': {'000': ['8:00']},
+                'friday': {'000': ['8:00', ':']}
+            }
+        }
+        testTimeFormat = 'HH.hhh'
+        expectedOutput = (
+            'Week ending on 12/9/2016\n'
+            '\nSaturday: Invalid number of time punches'
+            '\nInvalid time: 9:@$'
+            '\nInvalid time: c:00'
+            '\nSunday: 0.0 hours'
+            '\nMonday: Invalid number of time punches'
+            '\nInvalid time: 10:70'
+            '\nInvalid time: 27:10'
+            '\nTuesday: 0.0 hours'
+            '\nWednesday: 8.0 hours'
+            '\nThursday: Invalid number of time punches'
+            '\nInvalid time: :'
+            '\nFriday: 0.0 hours'
+            '\n\nTotal hours for the week: 8.0 hours'
+        )
+        self.assertEqual(PunchCard.main(testConfig, testTimeFormat), expectedOutput)
+
+
 if __name__ == '__main__':
     unittest.main()
