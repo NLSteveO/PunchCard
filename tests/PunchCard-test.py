@@ -33,8 +33,14 @@ class CalculateDayTests(unittest.TestCase):
     def test_returnsZeroTotalAndEmptyErrorString_givenEmptyProjectArrayAndNonEmptyDayEntry(self):
         self.assertEqual(PunchCard.calculateDay({'000': ['8:00', '4:00']}, []), ({'total': 0.0}, {}))
 
-    def test_returnsZeroTotalAndEmptyErrorString_givenNonEmptyProjectArrayAndEmptyDayEntry(self):
+    def test_returnsZeroTotalAndEmptyErrorString_givenProjectArrayAndDayEntryWithEmptyProjectPunches(self):
         self.assertEqual(PunchCard.calculateDay({'000': []}, ['000', '001']), ({'total': 0.0}, {}))
+
+    def test_returnsZeroTotalAndErrorString_givenWrongNumberOfPunchesInDay(self):
+        self.assertEqual(
+            PunchCard.calculateDay({'000': ['8:00', '10:00', '4:00']}, ['000']),
+            ({'total': 0.0}, {'000': '000: Invalid number of time punches'})
+        )
 
     def test_returnsZeroAndEmptyErrorString_givenTwoEqualTimeEntries(self):
         dayEntry = {'000': ['8:00', '8:00']}
@@ -72,6 +78,36 @@ class CalculateDayTests(unittest.TestCase):
             PunchCard.calculateDay(dayEntry, ['000']),
             ({'000': 0.0, 'total': 0.0}, {'000': 'Invalid time: a\n\tInvalid time: 10:$0'})
         )
+
+
+class calculateWeekTests(unittest.TestCase):
+
+    def setUp(self):
+        self.daysOfTheWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+
+    def test_returnsSixteenHoursWithOneProjectAsZero_givenThreeProjectsAndTwoDays(self):
+        weekEntry = {
+            'monday': {'000': 8.0, 'total': 8.0},
+            'tuesday': {'001': 4.0, '000': 4.0, 'total': 8.0},
+            'total': 0.0
+        }
+        actualOutput = PunchCard.calculateWeek(weekEntry, ['000', '001', '002'], self.daysOfTheWeek)
+        expectedOutput = {
+            '000': 12.0,
+            '001': 4.0,
+            '002': 0.0,
+            'total': 16.0
+        }
+        self.assertEqual(actualOutput, expectedOutput)
+
+    def test_returnsOnlyTotalOfZero_givenEmptyDayAndEmptyProjects(self):
+        weekEntry = {
+            'tuesday': {},
+            'total': 0.0
+        }
+        actualOutput = PunchCard.calculateWeek(weekEntry, [], self.daysOfTheWeek)
+        expectedOutput = {'total': 0.0}
+        self.assertEqual(actualOutput, expectedOutput)
 
 
 class PrintDaysHoursTests(unittest.TestCase):
@@ -131,6 +167,39 @@ class PrintDaysHoursTests(unittest.TestCase):
         expectedOutput = '\nMonday: 8.167 hours\n\t000: 8.167 hours'
         self.assertEqual(actualOutput, expectedOutput)
 
+    def test_returnsStringForDayWithOddPunchCountErrorIncluded_givenErrorObject(self):
+        actualOutput = PunchCard.printDaysHours(
+            'Monday',
+            {'000': 8.166666666666666, '001': 0.0, 'total': 8.166666666666666},
+            'HH.hhh',
+            ['000', '001', '002'],
+            {'002': '002: Invalid number of time punches'}
+        )
+        expectedOutput = '\nMonday: 8.167 hours\n\t000: 8.167 hours\n\t001: 0.0 hours\n\t002: Invalid number of time punches'
+        self.assertEqual(actualOutput, expectedOutput)
+
+    def test_returnsStringForDayWithDecimalHours_givenExtraProjectCodes(self):
+        actualOutput = PunchCard.printDaysHours(
+            'Monday',
+            {'000': 8.166666666666666, '001': 0.0, 'total': 8.166666666666666},
+            'HH.hhh',
+            ['000', '001', '002'],
+            {}
+        )
+        expectedOutput = '\nMonday: 8.167 hours\n\t000: 8.167 hours\n\t001: 0.0 hours'
+        self.assertEqual(actualOutput, expectedOutput)
+
+    def test_returnsStringForDayWithInvalidTimeErrorIncluded_givenErrorObject(self):
+        actualOutput = PunchCard.printDaysHours(
+            'Monday',
+            {'000': 8.166666666666666, '001': 0.0, 'total': 8.166666666666666},
+            'HH.hhh',
+            ['000', '001'],
+            {'001': 'Invalid time: 9:$0'}
+        )
+        expectedOutput = '\nMonday: 8.167 hours\n\t000: 8.167 hours\n\tInvalid time: 9:$0\n\t001: 0.0 hours'
+        self.assertEqual(actualOutput, expectedOutput)
+
     def test_throwsError_givenAStringForHours(self):
         with self.assertRaises(TypeError):
             PunchCard.printDaysHours('monday', 'a', 'HH.hhh')
@@ -163,12 +232,22 @@ class PrintWeekHoursTests(unittest.TestCase):
         expectedOutput = '\nTotal hours for the week: 8.167 hours\n\t000: 8.167 hours'
         self.assertEqual(actualOutput, expectedOutput)
 
+    def test_returnsStringForWeekWithUsedProjectCodes_givenExtraProjectCodesThanUsed(self):
+        actualOutput = PunchCard.printWeekHours(
+            {'000': 8.166666666666666, 'total': 8.166666666666666},
+            'HH.hhh',
+            ['000', '001']
+        )
+        expectedOutput = '\nTotal hours for the week: 8.167 hours\n\t000: 8.167 hours'
+        self.assertEqual(actualOutput, expectedOutput)
+
     def test_throwsError_givenAStringForHours(self):
         with self.assertRaises(TypeError):
             PunchCard.printWeekHours('a', 'HH.hhh')
 
 
 class ValidDayTests(unittest.TestCase):
+
     def test_returnsTrue_givenEvenNumberOfTimePunches(self):
         self.assertTrue(PunchCard.validDay(['8:00', '12:00', '12:30', '4:00']))
 
@@ -180,6 +259,7 @@ class ValidDayTests(unittest.TestCase):
 
 
 class ValidTimeTests(unittest.TestCase):
+
     def test_returnsTrue_givenValid24HourTime(self):
         self.assertTrue(PunchCard.validTime('17:00'))
 
