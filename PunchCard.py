@@ -25,63 +25,116 @@ def calcWorkTime(timeIn, timeOut):
     return newHour + (newMinutes / 60)
 
 
-def calculateDay(dayEntry):
-    index = 0
-    dayHours = 0.0
-    errors = ''
-    while(index < len(dayEntry)):
-        if not validTime(dayEntry[index]) or not validTime(dayEntry[index+1]):
-            if not validTime(dayEntry[index]):
-                errors = '{}\nInvalid time: {}'.format(errors, dayEntry[index])
-            if not validTime(dayEntry[index+1]):
-                errors = '{}\nInvalid time: {}'.format(errors, dayEntry[index+1])
-            dayHours = 0.0
-            break
-        dayHours += calcWorkTime(dayEntry[index], dayEntry[index+1])
-        index += 2
+def calculateDay(dayEntry, projects):
+    dayHours = {'total': 0.0}
+    errors = {}
+    for project in projects:
+        if project not in dayEntry or not dayEntry[project]:
+            continue
+        if not validDay(dayEntry[project]):
+            errors[project] = '{}: Invalid number of time punches'.format(project)
+            continue
+        index = 0
+        dayHours[project] = 0.0
+        while(index < len(dayEntry[project])):
+            if not validTime(dayEntry[project][index]) or not validTime(dayEntry[project][index+1]):
+                if not validTime(dayEntry[project][index]):
+                    errors[project] = 'Invalid time: {}'.format(dayEntry[project][index])
+                if not validTime(dayEntry[project][index+1]):
+                    errors[project] = (
+                        'Invalid time: {}'.format(dayEntry[project][index+1]) if project not in errors
+                        else '{}\n\tInvalid time: {}'.format(errors[project], dayEntry[project][index+1]))
+                dayHours[project] = 0.0
+                break
+            dayHours[project] += calcWorkTime(dayEntry[project][index], dayEntry[project][index+1])
+            index += 2
+        dayHours['total'] += dayHours[project]
     return (dayHours, errors)
 
 
-def printDaysHours(day, hours, timeFormat):
-    floatHours = round(hours, 3)
-    intHours = int(floatHours)
-    intMinutes = int((floatHours - intHours)*60)
-    if timeFormat == 'HH.hhh':
-        return '\n{}: {} hours'.format(day.capitalize(), floatHours)
-    elif timeFormat == 'HH:mm':
-        return '\n{}: {} hours {} minutes'.format(day.capitalize(), intHours, intMinutes)
-    else:
-        return '\n{}: {} hours {} minutes({} hours)'.format(day.capitalize(), intHours, intMinutes, floatHours)
+def calculateWeek(weekEntry, projects, daysOfTheWeek):
+    weekHours = {'total': 0.0}
 
+    for project in projects:
+        weekHours[project] = 0.0
 
-def printWeekHours(hours, timeFormat):
-    floatHours = round(hours, 3)
-    intHours = int(floatHours)
-    intMinutes = int((floatHours - intHours)*60)
-    if timeFormat == 'HH.hhh':
-        return '\nTotal hours for the week: {} hours'.format(floatHours)
-    elif timeFormat == 'HH:mm':
-        return '\nTotal hours for the week: {} hours {} minutes'.format(intHours, intMinutes)
-    else:
-        return '\nTotal hours for the week: {} hours {} minutes({} hours)'.format(intHours, intMinutes, floatHours)
-
-
-def main(config, timeFormat):
-    daysOfTheWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']
-    weekHours = 0.0
-    punchCardOutput = '{}{}'.format(config['title'], '\n')
     for day in daysOfTheWeek:
-        if day not in config['day'] or not config['day'][day]:
-            punchCardOutput = '{}{}'.format(punchCardOutput, printDaysHours(day, 0.0, timeFormat))
+        if day not in weekEntry or not weekEntry[day]:
             continue
-        if not validDay(config['day'][day]['000']):
-            punchCardOutput = '{}\n{}: Invalid number of time punches'.format(punchCardOutput, day.capitalize())
-            continue
-        dayHours = calculateDay(config['day'][day]['000'])
-        punchCardOutput = '{}{}{}'.format(punchCardOutput, dayHours[1], printDaysHours(day, dayHours[0], timeFormat))
-        weekHours += dayHours[0]
+        weekHours['total'] += weekEntry[day]['total']
+        for project in projects:
+            if project not in weekEntry[day] or not weekEntry[day][project]:
+                continue
+            weekHours[project] += weekEntry[day][project]
+    return weekHours
 
-    return '{}{}{}'.format(punchCardOutput, '\n', printWeekHours(weekHours, timeFormat))
+
+def printDaysHours(day, dayHours, timeFormat, projects, errors):
+    floatTotalHours = round(dayHours['total'], 3)
+    intTotalHours = int(floatTotalHours)
+    intTotalMinutes = int((floatTotalHours - intTotalHours)*60)
+    dayHoursOutput = ''
+    if timeFormat == 'HH.hhh':
+        dayHoursOutput = '{}\n{}: {} hours'.format(dayHoursOutput, day, floatTotalHours)
+    elif timeFormat == 'HH:mm':
+        dayHoursOutput = '{}\n{}: {} hours {} minutes'.format(dayHoursOutput, day, intTotalHours, intTotalMinutes)
+    else:
+        dayHoursOutput = (
+            '{}\n{}: {} hours {} minutes({} hours)'.format(dayHoursOutput, day, intTotalHours, intTotalMinutes, floatTotalHours)
+        )
+    for project in projects:
+        if project not in dayHours:
+            if project in errors:
+                dayHoursOutput = '{}\n\t{}'.format(dayHoursOutput, errors[project])
+            continue  # pragma: no cover because https://bitbucket.org/ned/coveragepy/issues/198/continue-marked-as-not-covered
+        floatHours = round(dayHours[project], 3)
+        intHours = int(floatHours)
+        intMinutes = int((floatHours - intHours)*60)
+        if project in errors:
+            dayHoursOutput = '{}\n\t{}'.format(dayHoursOutput, errors[project])
+        if timeFormat == 'HH.hhh':
+            dayHoursOutput = '{}\n\t{}: {} hours'.format(dayHoursOutput, project, floatHours)
+        elif timeFormat == 'HH:mm':
+            dayHoursOutput = '{}\n\t{}: {} hours {} minutes'.format(dayHoursOutput, project, intHours, intMinutes)
+        else:
+            dayHoursOutput = (
+                '{}\n\t{}: {} hours {} minutes({} hours)'.format(dayHoursOutput, project, intHours, intMinutes, floatHours)
+            )
+
+    return dayHoursOutput
+
+
+def printWeekHours(weekHours, timeFormat, projects):
+    floatTotalHours = round(weekHours['total'], 3)
+    intTotalHours = int(floatTotalHours)
+    intTotalMinutes = int((floatTotalHours - intTotalHours)*60)
+    weekHoursOutput = ''
+    if timeFormat == 'HH.hhh':
+        weekHoursOutput = '{}\nTotal hours for the week: {} hours'.format(weekHoursOutput, floatTotalHours)
+    elif timeFormat == 'HH:mm':
+        weekHoursOutput = (
+            '{}\nTotal hours for the week: {} hours {} minutes'.format(weekHoursOutput, intTotalHours, intTotalMinutes)
+        )
+    else:
+        weekHoursOutput = '{}\nTotal hours for the week: {} hours {} minutes({} hours)'.format(
+            weekHoursOutput, intTotalHours, intTotalMinutes, floatTotalHours
+        )
+    for project in projects:
+        if project not in weekHours or not weekHours[project]:
+            continue  # pragma: no cover because https://bitbucket.org/ned/coveragepy/issues/198/continue-marked-as-not-covered
+        floatHours = round(weekHours[project], 3)
+        intHours = int(floatHours)
+        intMinutes = int((floatHours - intHours)*60)
+        if timeFormat == 'HH.hhh':
+            weekHoursOutput = '{}\n\t{}: {} hours'.format(weekHoursOutput, project, floatHours)
+        elif timeFormat == 'HH:mm':
+            weekHoursOutput = '{}\n\t{}: {} hours {} minutes'.format(weekHoursOutput, project, intHours, intMinutes)
+        else:
+            weekHoursOutput = (
+                '{}\n\t{}: {} hours {} minutes({} hours)'.format(weekHoursOutput, project, intHours, intMinutes, floatHours)
+            )
+
+    return weekHoursOutput
 
 
 def validDay(day):
@@ -93,6 +146,27 @@ def validTime(time):
         return False
     pattern = re.compile('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
     return pattern.match(time)
+
+
+def main(config, timeFormat):
+    daysOfTheWeek = ['saturday', 'sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+    projects = config['day']['projects']
+    week = {'total': 0.0}
+    punchCardOutput = '{}{}'.format(config['title'], '\n')
+    for day in daysOfTheWeek:
+        if day not in config['day'] or not config['day'][day]:
+            punchCardOutput = (
+                '{}{}'.format(punchCardOutput, printDaysHours(day.capitalize(), {'total': 0.0}, timeFormat, projects, ''))
+            )
+            continue
+        dayHours = calculateDay(config['day'][day], projects)
+        punchCardOutput = (
+            '{}{}'.format(punchCardOutput, printDaysHours(day.capitalize(), dayHours[0], timeFormat, projects, dayHours[1]))
+        )
+        week[day] = dayHours[0]
+
+    weekHours = calculateWeek(week, projects, daysOfTheWeek)
+    return '{}{}{}'.format(punchCardOutput, '\n', printWeekHours(weekHours, timeFormat, projects))
 
 
 if __name__ == '__main__':  # pragma: no cover

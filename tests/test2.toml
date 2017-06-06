@@ -1,25 +1,32 @@
 title = "Week ending on 12/9/16"
 
 [day]
-  projects = [000]
+  # Total 16 hours 10 minutes
+  # 000 8 hours 0 minutes
+  # 001 4 hours 10 minutes
+  # 002 4 hours 0 minutes
+  projects = ['000', '001', '002']
 
-  [day.saturday]
-    000 = ['8:10', '10:00', '10:10', '12:40', '2:00', '2:10', '5:00']
+  [day.saturday] # Should be 4 hours 10 minutes
+    '000' = ['8:10', '10:00', '10:10'] # Should be invalid number of time punches
+    '001' = ['12:40', '2:00', '2:10', '5:00'] # Should be 4 hours 10 minutes
 
-  [day.sunday]
-    000 = ['9:@$', 'c:00']
+  [day.sunday] # Should be 0 hours 0 minutes
+    '000' = ['9:@$', 'c:00'] # Should be 2 invalid times
+    '001' = ['27:00', '1:00'] # Should be 1 invalid time
 
-  [day.monday]
-    000 = ['8:10', '12:00', '5:10']
+  [day.monday] # Should be 0 hours 0 minutes
+    '002' = ['8:10', '12:00', '5:10'] # Should be invalid number of time punches
 
-  [day.tuesday]
-    000 = ['8:10', '10:00', '10:70', '27:10', '12:40', '2:00', '2:10', '5:00']
+  [day.tuesday] # Should be 4 hours 0 minutes
+    '000' = ['8:10', '10:00', '10:70', '27:10'] # Should be 2 invalid times
+    '002' = ['12:40', '2:00', '2:20', '5:00'] # Should be 4 hours 0 minutes
 
-  [day.wednesday]
-    000 = ['8:00', '4:00']
+  [day.wednesday] # Should be 8 hours 0 minutes
+    '000' = ['8:00', '4:00'] # Should be 8 hours 0 minutes
 
-  [day.thursday]
-    000 = ['8:00']
+  [day.thursday] # Should be 0 hours 0 minutes
+    '000' = ['8:00'] # Should be invalid number of time punches
 
-  [day.friday]
-    000 = ['8:00', ':']
+  [day.friday] # Should be 0 hours 0 minutes
+    '000' = ['8:00', ':'] # Should be 1 invalid time
