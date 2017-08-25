@@ -165,6 +165,16 @@ title = "Week ending on 12/9/16"
     '004' = ['12:30', '2:10']
 ```
 
+*NOTE:* If time being added starts on one day and ends on the next day, I recommend putting the punches you need on the first day up to midnight(0:00 or 24:00) so that
+
+For Example:
+```
+[day.monday]
+  '000' = ['22:00', '24:00']
+[day.tuesday]
+  '000' = ['0:00', '2:00', '2:40', '6:00']
+```
+
 #### Output Example
 The output will be a simple text file, the first line will be "Week ending on [mm/dd/yy]". The following lines will start with the day of the week then the number of hours and minutes worked that day. For each day there will be an indented line for each project code used on that day in the format of project code followed by the number of hours and minutes worked that day for the given project code. The last lines will say "Total hours for the week: [z]" where [z] is the sum of the hours and minutes from the day totals on previous lines. That will be followed up with a line for each project code used during the week and its total hours and minutes for the week.
 
