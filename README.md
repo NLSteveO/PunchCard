@@ -38,21 +38,21 @@ Running
 #### Simple
 To run this program you will want to pass the input file to the program as an argument and it will output to your screen:
 ```
-$ python3 -m PunchCard tests/test1.toml
+$ python3 -m PunchCard fixtures/PunchCard-Sample1.toml
 ```
 
 #### Advanced
 It is also possible to pass the input file in through stdin like so:
 ```
-$ python3 -m PunchCard < tests/test1.toml
+$ python3 -m PunchCard < fixtures/PunchCard-Sample1.toml
 ```
 However you can also then redirect the standard out to a file rather than have the output print to the screen like this:
 ```
-$ python3 -m PunchCard tests/test1.toml > test1.out
+$ python3 -m PunchCard fixtures/PunchCard-Sample1.toml > PunchCard-Sample1.out
 ```
 Also, if you want to have the output go to a file and your screen you can do the following:
 ```
-$ python3 -m PunchCard tests/test1.toml | tee test1.out
+$ python3 -m PunchCard fixtures/PunchCard-Sample1.toml | tee PunchCard-Sample1.out
 ```
 
 #### Flags
@@ -61,7 +61,7 @@ There are two additional Flags that you can pass to the program to alter how the
 - `-H, --hours`    Outputs hours only as a decimal
 
 ```
-$ python3 -m PunchCard tests/test.toml -H
+$ python3 -m PunchCard fixtures/PunchCard-Sample1.toml -H
 Week ending on 12/9/16
 
 Saturday: 0.0 hours
@@ -82,7 +82,7 @@ Total hours for the week: 24.5 hours
 - `-m, --minutes`  Outputs hours with minutes
 
 ```
-$ python3 -m PunchCard tests/test.toml -m
+$ python3 -m PunchCard fixtures/PunchCard-Sample1.toml -m
 Week ending on 12/9/16
 
 Saturday: 0 hours 0 minutes
@@ -209,7 +209,7 @@ Tools
 For more detailed information see the [README in the tools directory](tools/README.md)
 
 #### Convert PunchCard Tool
-This tool takes the old format for PunchCards(e.g. [test1](/tests/tools/test1)) and converts them into the new [TOML](http://github.com/toml-lang/toml) formatted PunchCards(e.g. [test1.toml](/tests/test1.toml)) that I use.
+This tool takes the old format for PunchCards(e.g. [test1](/fixtures/tools/Old-PunchCard-Sample1)) and converts them into the new [TOML](http://github.com/toml-lang/toml) formatted PunchCards(e.g. [test1.toml](/fixtures/PunchCard-Sample1.toml)) that I use.
 
 #### Clean Script
 This is just a bash script that cleans up some artifacts created by python and the test libraries I use.
