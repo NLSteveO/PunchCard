@@ -112,14 +112,17 @@ $ flake8
 #### Unit tests
 I am using the [python standard library's unittest framework.](https://docs.python.org/3/library/unittest.html) You can run the tests using:
 ```
-$ python3 -m unittest -bv tests/PunchCard-test
+$ python3 -m unittest
 ```
+*Note:* You can use the flag `-v` to get a more verbose output when running tests.
 
 #### Coverage
 I am using the library [coverage](https://bitbucket.org/ned/coveragepy) for creating coverage reports. To get a coverage report first run your unit tests using:
 ```
-$ coverage run -m test/PunchCard-test -v
+$ coverage run -m unittest discover
 ```
+*Note:* You can use the flag `-v` to get a more verbose output when running tests.
+
 Then to get a coverage report use:
 ```
 $ coverage report

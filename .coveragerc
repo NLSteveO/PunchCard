@@ -14,6 +14,7 @@ fail_under = 100
 omit =
     # Omit tests directory
     tests/*
+    *__init__.py
     # Omit external libraries
     */site-packages/*
     */dist-packages/*
