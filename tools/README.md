@@ -26,7 +26,10 @@ $ python3 tools/convertPunchCardToToml.py < fixtures/tools/Old-PunchCard-Sample1
 ```
 
 #### Tests
-There are tests for this tool in tests/tools directory.
+There are tests for this tool in tests/tools directory. They are ran when running the mentioned usage in the main README:
+```
+$ python3 -m unittest
+```
 
 Clean Script
 ----------
