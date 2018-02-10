@@ -18,6 +18,9 @@ Table of Contents
 - [Examples](#user-content-examples)
     - [Input Example](#user-content-input-example)
     - [Output Example](#user-content-output-example)
+- [Tools](#user-content-tools)
+    - [Convert PunchCard Tool](#user-content-convert-punchcard-tool)
+    - [Clean Script](#user-content-clean-script)
 - [What's New](#user-content-whats-new)
 - [License](#user-content-license)
 
@@ -197,6 +200,16 @@ Total hours for the week: 41 hours 30 minutes(41.5 hours)
         003: 3 hours 40 minutes(3.667 hours)
         004: 12 hours 45 minutes(12.75 hours)
 ```
+
+Tools
+----------
+For more detailed information see the [README in the tools directory](tools/README.md)
+
+#### Convert PunchCard Tool
+This tool takes the old format for PunchCards(e.g. [test1](/tests/tools/test1)) and converts them into the new [TOML](http://github.com/toml-lang/toml) formatted PunchCards(e.g. [test1.toml](/tests/test1.toml)) that I use.
+
+#### Clean Script
+This is just a bash script that cleans up some artifacts created by python and the test libraries I use.
 
 What's New
 ----------
