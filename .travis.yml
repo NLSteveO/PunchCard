@@ -7,5 +7,5 @@ install:
 # command to run tests
 script:
   - flake8
-  - coverage run -m tests.PunchCard-test -v
+  - coverage run -m unittest discover -v
   - coverage report
