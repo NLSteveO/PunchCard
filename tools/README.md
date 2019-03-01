@@ -12,6 +12,11 @@ This method will create a new file of the same name(and in the same path) with .
 ```
 $ python3 tools/convertPunchCardToToml.py fixtures/tools/Old-PunchCard-Sample1
 ```
+**OR** using pipenv:
+```
+$ pipenv run convert fixtures/tools/Old-PunchCard-Sample1
+```
+This can also be used the next three examples below.
 
 These methods will output to the screen using stdout but can be combined with similar output techniques as seen in [Running Advanced](/README.md#user-content-advanced) of the main README.
 ```
@@ -29,6 +34,8 @@ $ python3 tools/convertPunchCardToToml.py < fixtures/tools/Old-PunchCard-Sample1
 There are tests for this tool in tests/tools directory. They are ran when running the mentioned usage in the main README:
 ```
 $ python3 -m unittest
+# OR
+$ pipenv run tests
 ```
 
 Clean Script
@@ -38,4 +45,8 @@ This is just a bash script that cleans up some artifacts created by python and t
 **Usage**:
 ```
 $ ./tools/clean.sh
+```
+**OR** using pipenv:
+```
+$ pipenv run clean
 ```

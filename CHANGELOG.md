@@ -3,6 +3,8 @@ PunchCard Changelog
 
 HEAD
 ----
+- 2019-02-28: [Add and use Pipenv to the project](https://github.com/NLSteveO/PunchCard/pull/44)
+- 2019-01-10: [Project Cleanup.](https://github.com/NLSteveO/PunchCard/pull/42)
 - 2018-02-09: [Add Convert PunchCard Tool.](https://github.com/NLSteveO/PunchCard/pull/41)
 - 2017-06-06: [Add handling for multiple project codes.](https://github.com/NLSteveO/PunchCard/pull/39)
 - 2017-05-12: [Add unit tests for main method.](https://github.com/NLSteveO/PunchCard/pull/38)

@@ -32,6 +32,12 @@ $ git clone https://github.com/NLSteveO/PunchCard.git
 $ cd PunchCard
 $ pip3 install -r requirements.txt
 ```
+**OR** if you can install using pipenv:
+```
+$ git clone https://github.com/NLSteveO/PunchCard.git
+$ cd PunchCard
+$ pipenv install
+```
 
 Running
 ----------
@@ -40,6 +46,11 @@ To run this program you will want to pass the input file to the program as an ar
 ```
 $ python3 -m PunchCard fixtures/PunchCard-Sample1.toml
 ```
+**OR** with pipenv:
+```
+$ pipenv run start fixtures/PunchCard-Sample1.toml
+```
+This can also be used in the next two sections, [Advanced](#user-content-advanced) and [Flags](#user-content-flags)
 
 #### Advanced
 It is also possible to pass the input file in through stdin like so:
@@ -108,11 +119,19 @@ I am using [flake8](https://github.com/PyCQA/flake8) for my style guide linter. 
 ```
 $ flake8
 ```
+**OR** using pipenv:
+```
+$ pipenv run lint
+```
 
 #### Unit tests
 I am using the [python standard library's unittest framework.](https://docs.python.org/3/library/unittest.html) You can run the tests using:
 ```
 $ python3 -m unittest
+```
+**OR** using pipenv:
+```
+$ pipenv run tests
 ```
 *Note:* You can use the flag `-v` to get a more verbose output when running tests.
 
@@ -130,6 +149,12 @@ $ coverage report
 Or you can generate annotated HTML listings detailing missed lines by using:
 ```
 $ coverage html
+```
+**OR** using pipenv:
+```
+$ pipenv run coverage
+$ pipenv run report
+$ pipenv run html
 ```
 
 Examples
