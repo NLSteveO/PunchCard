@@ -2,31 +2,23 @@ import argparse
 import re
 import sys
 import toml
+from datetime import timedelta
 
 
 def calcWorkTime(timeIn, timeOut):
-    inSplit = timeIn.split(':')
-    outSplit = timeOut.split(':')
-    hourIn = float(inSplit[0])
-    minuteIn = float(inSplit[1])
-    hourOut = float(outSplit[0])
-    minuteOut = float(outSplit[1])
+    if timeIn.hour > timeOut.hour:
+        timeOut.replace(timeOut.hour + 12)
 
-    if hourIn > hourOut:
-        newHour = (hourOut + 12) - hourIn
-    else:
-        newHour = hourOut - hourIn
+    deltaIn = timedelta(hours=timeIn.hour, minutes=timeIn.minute)
+    deltaOut = timedelta(hours=timeOut.hour, minutes=timeOut.minute)
+    timeDifference = deltaOut - deltaIn
+    print(timeDifference)
 
-    newMinutes = minuteOut - minuteIn
-    if newMinutes < 0:
-        newHour -= 1
-        newMinutes += 60
-
-    return newHour + (newMinutes / 60)
+    return timeDifference
 
 
 def calculateDay(dayEntry, projects):
-    dayHours = {'total': 0.0}
+    dayHours = {'total': timedelta()}
     errors = {}
     for project in projects:
         if project not in dayEntry or not dayEntry[project]:
@@ -35,20 +27,12 @@ def calculateDay(dayEntry, projects):
             errors[project] = '{}: Invalid number of time punches'.format(project)
             continue
         index = 0
-        dayHours[project] = 0.0
+        dayHours[project] = timedelta()
         while(index < len(dayEntry[project])):
-            if not validTime(dayEntry[project][index]) or not validTime(dayEntry[project][index+1]):
-                if not validTime(dayEntry[project][index]):
-                    errors[project] = 'Invalid time: {}'.format(dayEntry[project][index])
-                if not validTime(dayEntry[project][index+1]):
-                    errors[project] = (
-                        'Invalid time: {}'.format(dayEntry[project][index+1]) if project not in errors
-                        else '{}\n\tInvalid time: {}'.format(errors[project], dayEntry[project][index+1]))
-                dayHours[project] = 0.0
-                break
             dayHours[project] += calcWorkTime(dayEntry[project][index], dayEntry[project][index+1])
             index += 2
         dayHours['total'] += dayHours[project]
+        print(dayHours[project])
     return (dayHours, errors)
 
 
@@ -141,11 +125,11 @@ def validDay(day):
     return len(day) % 2 == 0
 
 
-def validTime(time):
-    if time is None:
-        return False
-    pattern = re.compile('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
-    return pattern.match(time)
+# def validTime(time):
+#     if time is None:
+#         return False
+#     pattern = re.compile('^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$')
+#     return pattern.match(time)
 
 
 def main(config, timeFormat):

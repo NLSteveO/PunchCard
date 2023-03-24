@@ -5,20 +5,22 @@ title = "Week ending on 12/9/16"
   # 000 24 hours 30 minutes
   projects = ['000']
 
+  startDate = 2016-12-03
+
   [day.sunday] # Should be 0 hours 0 minutes
 
   [day.saturday] # Should be 0 hours 0 minutes
 
   [day.monday] # Should be 8 hours 30 minutes
-    '000' = ['8:10', '12:00', '12:30', '5:10']
+    '000' = [08:10:00, 12:00:00, 12:30:00, 05:10:00]
 
   [day.tuesday] # Should be 8 hours 0 minutes
-    '000' = ['8:10', '10:00', '10:10', '12:10', '12:40', '2:00', '2:10', '5:00']
+    '000' = [08:10:00, 10:00:00, 10:10:00, 12:10:00, 12:40:00, 02:00:00, 02:10:00, 05:00:00]
 
   [day.wednesday] # Should be 8 hours 0 minutes
-    '000' = ['8:00', '4:00']
+    '000' = [08:00:00, 04:00:00]
 
   [day.thursday] # Should be 0 hours 0 minutes
 
   [day.friday] # Should be 0 hours 0 minutes
-    '000' = ['8:00', '8:00']
+    '000' = [08:00:00, 08:00:00]
